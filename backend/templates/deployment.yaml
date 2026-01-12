@@ -1,29 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.app.name }}
+  name: "{{ .Values.nameOverride }}"
   labels:
-    app: {{ .Values.app.name }}
+    app: {{ .Values.tag.app }}
+    version: {{ .Values.tag.version }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Values.app.name }}
+      app: {{ .Values.tag.app }}
+      version: {{ .Values.tag.version }}
   template:
     metadata:
       labels:
-        app: {{ .Values.app.name }}
+        app: {{ .Values.tag.app }}
+        version: {{ .Values.tag.version }}
     spec:
       containers:
-        - name: {{ .Values.app.name }}
+        - name: {{ .Values.nameOverride }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.containerPort }}
           env:
-            {{- if .Values.env }}
-            {{- range $key, $value := .Values.env }}
-            - name: {{ $key }}
-              value: "{{ $value }}"
+            {{- range .Values.environment }}
+            - name: {{ .name }}
+              {{- if .value }}
+              value: "{{ .value }}"
+              {{- end }}
+              {{- if .valueFrom }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .valueFrom.secretKeyRef.name }}
+                  key: {{ .valueFrom.secretKeyRef.key }}
+              {{- end }}
             {{- end }}
-            {{- end }}
+      imagePullSecrets:
+        {{- range .Values.imagePullSecrets }}
+        - name: {{ .name }}
+        {{- end }}
