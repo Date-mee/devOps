@@ -1,1 +1,20 @@
 
+replicaCount: 2
+image:
+  repository: "us-central1-docker.pkg.dev/learningocean-431110/docker-images/dating-backend"
+  pullPolicy: Always
+  tag: "development"
+imagePullSecrets:
+  - name: regcredio
+tag:
+  app: "dating-backend"
+  version: "v1"
+
+nameOverride: "dating-backend"
+fullnameOverride: "dating-backend"
+
+containerPort: 6601
+
+resources: {}
+
+
