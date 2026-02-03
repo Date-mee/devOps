@@ -8,7 +8,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Values.nameOverride }}
+      app: {{ .Values.tag.app }}
   template:
     metadata:
       labels:
@@ -23,20 +23,24 @@ spec:
       - name: {{ .Values.nameOverride }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- with .Values.environment }}
+        {{- if .Values.environment }}
         env:
-          {{- toYaml . | nindent 8 }}
+          {{- toYaml .Values.environment | nindent 10 }}
         {{- end }}
         ports:
         - name: web
           containerPort: 6601
-        # Add the liveness probe below
         livenessProbe:
           tcpSocket:
-            port: 3000 # or the port number your app listens to
+            port: 6601
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 1
-
+        {{- if .Values.resources }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        {{- end }}
+      {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-      - name: regcredio
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      {{- end }}
