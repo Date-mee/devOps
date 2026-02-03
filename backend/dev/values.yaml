@@ -2,7 +2,7 @@ replicaCount: 2
 
 image:
   repository: us-central1-docker.pkg.dev/learningocean-431110/docker-images/dating-backend
-  tag: development
+  tag: "00b980bf0274af61c26640a4fee4507774dbea0b"
   pullPolicy: Always
 
 imagePullSecrets:
