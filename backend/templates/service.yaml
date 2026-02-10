@@ -34,4 +34,4 @@ spec:
         - destination:
             host: backend.default.svc.cluster.local
             port:
-              number: 80
+              number: 6601
