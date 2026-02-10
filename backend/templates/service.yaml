@@ -13,3 +13,25 @@ spec:
       protocol: TCP
       port: 6601
       targetPort: 6601
+
+---
+
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: backend
+  namespace: default
+spec:
+  hosts:
+    - backend.gouravn.info
+  gateways:
+    - istio-system/main-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: backend.default.svc.cluster.local
+            port:
+              number: 80
