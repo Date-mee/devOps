@@ -32,6 +32,6 @@ spec:
             prefix: /
       route:
         - destination:
-            host: backend.default.svc.cluster.local
+            host: dating-backend-service.default.svc.cluster.local
             port:
               number: 6601
